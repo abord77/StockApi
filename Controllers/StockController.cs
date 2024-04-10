@@ -1,5 +1,6 @@
 ﻿using LearningApi.Data;
 using LearningApi.Mappers;
+using LearningApi.DTOs.Stocks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningApi.Controllers {
@@ -25,6 +26,14 @@ namespace LearningApi.Controllers {
                 return NotFound();
             }
             return Ok(stock.ToStockDTO());
+        }
+
+        [HttpPost]
+        public IActionResult CreateNewEntry([FromBody] CreateStockRequestDto stockDto) {
+            var stockModel = stockDto.ToStockFromCreateDTO();
+            _dbContext.Stocks.Add(stockModel);
+            _dbContext.SaveChanges();
+            return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel);
         }
     }
 }

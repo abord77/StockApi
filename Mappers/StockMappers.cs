@@ -1,5 +1,6 @@
 ﻿using LearningApi.DTOs.Stocks;
 using LearningApi.Models;
+using System.Runtime.CompilerServices;
 
 namespace LearningApi.Mappers {
     public static class StockMappers {
@@ -12,6 +13,17 @@ namespace LearningApi.Mappers {
                 LastDiv = stockModel.LastDiv,
                 Industry = stockModel.Industry,
                 MarketCap = stockModel.MarketCap
+            };
+        }
+
+        public static Stock ToStockFromCreateDTO(this CreateStockRequestDto stockDto) {
+            return new Stock {
+                Symbol = stockDto.Symbol,
+                CompanyName = stockDto.CompanyName,
+                Purchase = stockDto.Purchase,
+                LastDiv = stockDto.LastDiv,
+                Industry = stockDto.Industry,
+                MarketCap = stockDto.MarketCap
             };
         }
     }
