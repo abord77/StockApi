@@ -1,4 +1,6 @@
 using LearningApi.Data;
+using LearningApi.Interfaces;
+using LearningApi.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // this service comes from episode 3
 });
+
+builder.Services.AddScoped<IStockRepository, StockRepository>(); // comes from episode 10
 
 var app = builder.Build();
 

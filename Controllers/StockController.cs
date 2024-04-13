@@ -4,27 +4,30 @@ using LearningApi.DTOs.Stocks;
 using Microsoft.AspNetCore.Mvc;
 using LearningApi.Models;
 using Microsoft.EntityFrameworkCore;
+using LearningApi.Interfaces;
 
 namespace LearningApi.Controllers {
     [Route("api/stock")]
     [ApiController]
-    public class StockController : ControllerBase { // changing all endpoints to async is ep 9
+    public class StockController : ControllerBase { // changing all endpoints to async is episode 9
                                                     // note: anyuthing that needs to go out and find other information should be wrapped in await (ex. anything in this controller going to the db should be async)
         private readonly ApplicationDBContext _dbContext;
-        public StockController(ApplicationDBContext dbContext) {
+        private readonly IStockRepository _stockRepo;
+        public StockController(ApplicationDBContext dbContext, IStockRepository stockRepo) {
             _dbContext = dbContext;
+            _stockRepo = stockRepo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() { // ep 4
-            var stock = await _dbContext.Stocks.ToListAsync();
+        public async Task<IActionResult> GetAll() { // episode 4
+            var stock = await _stockRepo.GetAllAsync();
             var stockDto = stock.Select(s => s.ToStockDTO());
             return Ok(stock);
         }
          
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id) { // ep 4
-            var stock = await _dbContext.Stocks.FindAsync(id);
+        public async Task<IActionResult> GetById([FromRoute] int id) { // episode 4
+            var stock = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
             if (stock == null) {
                 return NotFound();
@@ -33,7 +36,7 @@ namespace LearningApi.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewEntry([FromBody] CreateStockRequestDto stockDto) { // ep 6
+        public async Task<IActionResult> CreateNewEntry([FromBody] CreateStockRequestDto stockDto) { // episode 6
             var stockModel = stockDto.ToStockFromCreateDTO();
             await _dbContext.Stocks.AddAsync(stockModel);
             await _dbContext.SaveChangesAsync();
@@ -42,7 +45,7 @@ namespace LearningApi.Controllers {
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto) { // ep 7
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto) { // episode 7
             var stockModel = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
             if (stockModel == null) {
@@ -64,7 +67,7 @@ namespace LearningApi.Controllers {
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id) { // ep 8
+        public async Task<IActionResult> Delete([FromRoute] int id) { // episode 8
             var stockModel = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
             if (stockModel == null) {
