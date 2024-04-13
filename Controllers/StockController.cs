@@ -27,55 +27,43 @@ namespace LearningApi.Controllers {
          
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id) { // episode 4
-            var stock = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            var stock = await _stockRepo.GetByIdAsync(id);
 
             if (stock == null) {
                 return NotFound();
             }
-            return Ok(stock.ToStockDTO());
+
+            return Ok(stock);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateNewEntry([FromBody] CreateStockRequestDto stockDto) { // episode 6
             var stockModel = stockDto.ToStockFromCreateDTO();
-            await _dbContext.Stocks.AddAsync(stockModel);
-            await _dbContext.SaveChangesAsync();
+            await _stockRepo.CreateAsync(stockModel);
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel);
         }
 
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto) { // episode 7
-            var stockModel = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
 
             if (stockModel == null) {
                 return NotFound();
             }
 
-
-            // this takes the payload to this endpoint and modifies the id using that body
-            stockModel.Symbol = updateDto.Symbol;
-            stockModel.CompanyName = updateDto.CompanyName;
-            stockModel.Purchase = updateDto.Purchase;
-            stockModel.LastDiv = updateDto.LastDiv;
-            stockModel.Industry = updateDto.Industry;
-            stockModel.MarketCap = updateDto.MarketCap;
-
-            await _dbContext.SaveChangesAsync();
-            return Ok(stockModel.ToStockDTO());
+            return Ok(stockModel);
         }
 
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id) { // episode 8
-            var stockModel = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            var stockModel = await _stockRepo.DeleteAsync(id);
 
             if (stockModel == null) {
                 return NotFound();
             }
 
-            _dbContext.Stocks.Remove(stockModel); // delete is not an asynchronous function since it is simply marking it for deletion, saving the change is a real I/O operation
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
     }
