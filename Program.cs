@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 });
 
 builder.Services.AddScoped<IStockRepository, StockRepository>(); // comes from episode 10
+builder.Services.AddScoped<ICommentRepository, CommentRepository>(); // comes from episode 12
 
 var app = builder.Build();
 

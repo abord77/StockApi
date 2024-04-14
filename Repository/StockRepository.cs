@@ -19,12 +19,7 @@ namespace LearningApi.Repository {
         }
 
         public async Task<Stock?> GetByIdAsync(int id) {
-            var stockModel = await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (stockModel == null) {
-                return null;
-            }
-            return stockModel;
+            return await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto) {
@@ -35,12 +30,13 @@ namespace LearningApi.Repository {
             }
 
             // this takes the payload to this endpoint and modifies the id using that body
-            existingStock.Symbol = stockDto.Symbol;
-            existingStock.CompanyName = stockDto.CompanyName;
-            existingStock.Purchase = stockDto.Purchase;
-            existingStock.LastDiv = stockDto.LastDiv;
-            existingStock.Industry = stockDto.Industry;
-            existingStock.MarketCap = stockDto.MarketCap;
+            //existingStock.Symbol = stockDto.Symbol;
+            //existingStock.CompanyName = stockDto.CompanyName;
+            //existingStock.Purchase = stockDto.Purchase;
+            //existingStock.LastDiv = stockDto.LastDiv;
+            //existingStock.Industry = stockDto.Industry;
+            //existingStock.MarketCap = stockDto.MarketCap;
+            _dbContext.Entry(existingStock).CurrentValues.SetValues(stockDto); // this line does exactly the top line but more concisely
 
             await _dbContext.SaveChangesAsync();
             return existingStock;

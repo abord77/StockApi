@@ -11,18 +11,16 @@ namespace LearningApi.Controllers {
     [ApiController]
     public class StockController : ControllerBase { // changing all endpoints to async is episode 9
                                                     // note: anyuthing that needs to go out and find other information should be wrapped in await (ex. anything in this controller going to the db should be async)
-        private readonly ApplicationDBContext _dbContext;
         private readonly IStockRepository _stockRepo;
-        public StockController(ApplicationDBContext dbContext, IStockRepository stockRepo) {
-            _dbContext = dbContext;
+        public StockController(IStockRepository stockRepo) {
             _stockRepo = stockRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() { // episode 4
-            var stock = await _stockRepo.GetAllAsync();
-            var stockDto = stock.Select(s => s.ToStockDTO());
-            return Ok(stock);
+            var stocks = await _stockRepo.GetAllAsync();
+            var stockDto = stocks.Select(s => s.ToStockDTO());
+            return Ok(stockDto);
         }
          
         [HttpGet("{id}")]
