@@ -2,6 +2,7 @@ using LearningApi.Data;
 using LearningApi.Interfaces;
 using LearningApi.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // this service comes from episode 3
+});
+
+builder.Services.AddControllers().AddNewtonsoftJson(options => {
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // episode 13, installed newtonsoft
 });
 
 builder.Services.AddScoped<IStockRepository, StockRepository>(); // comes from episode 10

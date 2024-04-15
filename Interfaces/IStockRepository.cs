@@ -8,5 +8,8 @@ namespace LearningApi.Interfaces {
         Task<Stock> CreateAsync(Stock stockModel);
         Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto);
         Task<Stock?> DeleteAsync(int id);
-    } // completed this refactor in episode 11
+        // completed this refactor in episode 11
+
+        Task<bool> StockExists(int id); // added in episode 14
+    }
 }

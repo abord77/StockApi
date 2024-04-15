@@ -17,7 +17,7 @@ namespace LearningApi.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() { // episode 4
+        public async Task<IActionResult> GetAll() { // episode 4, episode 13 finally returning comments with the stock (one-to-many relationship)
             var stocks = await _stockRepo.GetAllAsync();
             var stockDto = stocks.Select(s => s.ToStockDTO());
             return Ok(stockDto);

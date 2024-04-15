@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using LearningApi.DTOs.Comments;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearningApi.DTOs.Stocks {
     public class StockDTO {
@@ -12,6 +13,7 @@ namespace LearningApi.DTOs.Stocks {
         public decimal LastDiv { get; set; }
 
         public long MarketCap { get; set; }
-        // Comments used to be here
+        
+        public List<CommentDTO> Comments { get; set; }
     }
 }

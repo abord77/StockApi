@@ -1,6 +1,6 @@
-@LearningApi_HostAddress = http://localhost:5294
+@LearningApi_HostAddress = http://localhost:3000
 
-GET {{LearningApi_HostAddress}}/weatherforecast/
+GET {{LearningApi_HostAddress}}/stockapi/
 Accept: application/json
 
 ###

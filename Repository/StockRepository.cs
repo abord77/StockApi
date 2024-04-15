@@ -1,10 +1,8 @@
 ﻿using LearningApi.Data;
 using LearningApi.DTOs.Stocks;
 using LearningApi.Interfaces;
-using LearningApi.Mappers;
 using LearningApi.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace LearningApi.Repository {
     public class StockRepository : IStockRepository { // leverages repository pattern from ep 10
@@ -15,11 +13,11 @@ namespace LearningApi.Repository {
         }
 
         public async Task<List<Stock>> GetAllAsync() {
-            return await _dbContext.Stocks.ToListAsync();
+            return await _dbContext.Stocks.Include(c => c.Comments).ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id) {
-            return await _dbContext.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto) {
@@ -58,6 +56,10 @@ namespace LearningApi.Repository {
             _dbContext.Stocks.Remove(stockModel); // delete is not an asynchronous function since it is simply marking it for deletion, saving the change is a real I/O operation
             await _dbContext.SaveChangesAsync();
             return stockModel;
+        }
+
+        public async Task<bool> StockExists(int id) {
+            return await _dbContext.Stocks.AnyAsync(s => s.Id == id);
         }
     }
 }
