@@ -18,17 +18,25 @@ namespace LearningApi.Controllers {
 
         [HttpGet]
         public async Task<IActionResult> GetAll() { // episode 4, episode 13 finally returning comments with the stock (one-to-many relationship)
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             var stocks = await _stockRepo.GetAllAsync();
             var stockDto = stocks.Select(s => s.ToStockDTO());
             return Ok(stockDto);
         }
          
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id) { // episode 4
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             var stock = await _stockRepo.GetByIdAsync(id);
 
             if (stock == null) {
-                return NotFound();
+                return NotFound("Stock not found");
             }
 
             return Ok(stock);
@@ -36,30 +44,42 @@ namespace LearningApi.Controllers {
 
         [HttpPost]
         public async Task<IActionResult> CreateNewEntry([FromBody] CreateStockRequestDto stockDto) { // episode 6
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             var stockModel = stockDto.ToStockFromCreateDTO();
             await _stockRepo.CreateAsync(stockModel);
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel);
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto) { // episode 7
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
 
             if (stockModel == null) {
-                return NotFound();
+                return NotFound("Stock not found");
             }
 
             return Ok(stockModel);
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id) { // episode 8
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             var stockModel = await _stockRepo.DeleteAsync(id);
 
             if (stockModel == null) {
-                return NotFound();
+                return NotFound("Stock not found");
             }
 
             return NoContent();

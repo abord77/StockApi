@@ -1,9 +1,13 @@
-﻿using LearningApi.Models;
+﻿using LearningApi.DTOs.Comments;
+using LearningApi.Models;
 
 namespace LearningApi.Interfaces {
     public interface ICommentRepository {
         Task<List<Comment>> GetAllAsync();
         Task<Comment?> GetByIdAsync(int id);
         Task<Comment> CreateAsync(Comment commentModel);
+        Task<Comment?> UpdateAsync(int id, UpdateCommentDto updateDto);
+        Task<Comment?> DeleteAsync(int id);
+        Task<bool> CommentExists(int id);
     }
 }
