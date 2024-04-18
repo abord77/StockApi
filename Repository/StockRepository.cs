@@ -1,5 +1,6 @@
 ﻿using LearningApi.Data;
 using LearningApi.DTOs.Stocks;
+using LearningApi.Helpers;
 using LearningApi.Interfaces;
 using LearningApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,18 @@ namespace LearningApi.Repository {
             _dbContext = dbContext;
         }
 
-        public async Task<List<Stock>> GetAllAsync() {
-            return await _dbContext.Stocks.Include(c => c.Comments).ToListAsync();
+        public async Task<List<Stock>> GetAllAsync(QueryObject query) {
+            var stocks = _dbContext.Stocks.Include(c => c.Comments).AsQueryable(); // rewriting this method to perform a query
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName)) {
+                stocks = stocks.Where(x => x.CompanyName.Contains(query.CompanyName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Symbol)) {
+                stocks = stocks.Where(x => x.Symbol.Contains(query.Symbol));
+            }
+
+            return await stocks.ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id) {

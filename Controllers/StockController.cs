@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using LearningApi.Models;
 using Microsoft.EntityFrameworkCore;
 using LearningApi.Interfaces;
+using LearningApi.Helpers;
 
 namespace LearningApi.Controllers {
     [Route("api/stock")]
@@ -17,12 +18,12 @@ namespace LearningApi.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() { // episode 4, episode 13 finally returning comments with the stock (one-to-many relationship)
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query /* searching/querying added in episode 18 */) { // episode 4, episode 13 finally returning comments with the stock (one-to-many relationship)
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            var stocks = await _stockRepo.GetAllAsync();
+            var stocks = await _stockRepo.GetAllAsync(query);
             var stockDto = stocks.Select(s => s.ToStockDTO());
             return Ok(stockDto);
         }
