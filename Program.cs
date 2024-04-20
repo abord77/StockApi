@@ -13,8 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
-    options.UseSqlServer(builder.Configuration["Stocks:ConnectionString"]); // this service comes from episode 3 (updated to remove plain text storing of connectionstring
-});
+    options.UseSqlServer(builder.Configuration["Stocks:ConnectionString"]); // this service comes from episode 3 (updated to remove plain text storing of connectionstring)
+}); // done using https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=windows
 
 builder.Services.AddControllers().AddNewtonsoftJson(options => {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // episode 13, installed newtonsoft
