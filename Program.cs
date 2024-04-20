@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // this service comes from episode 3
+    options.UseSqlServer(builder.Configuration["Stocks:ConnectionString"]); // this service comes from episode 3 (updated to remove plain text storing of connectionstring
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options => {
