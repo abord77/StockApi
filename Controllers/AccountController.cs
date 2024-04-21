@@ -4,15 +4,18 @@ using LearningApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningApi.Controllers {
     [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, ITokenService token) {
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService token) {
             _userManager = userManager;
+            _signInManager = signInManager;
             _tokenService = token;
         }
 
@@ -49,6 +52,33 @@ namespace LearningApi.Controllers {
             } catch (Exception ex) {
                 return StatusCode(500, ex); // in case the 2 cases above fail, this will catch and return that error too
             }
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto) { // episode 24
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
+
+            if (user == null) {
+                return Unauthorized("Invalid username!");
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false); // good to not have a lockout feature enabled
+
+            if (!result.Succeeded) {
+                return Unauthorized("Username not found and/or password incorrect");
+            }
+
+            return Ok(
+                new NewUserDto {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenService.CreateToken(user)
+                }
+            );
         }
     }
 }
