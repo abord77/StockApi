@@ -2,6 +2,7 @@ using LearningApi.Data;
 using LearningApi.Interfaces;
 using LearningApi.Models;
 using LearningApi.Repository;
+using LearningApi.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
 
 builder.Services.AddScoped<IStockRepository, StockRepository>(); // comes from episode 10
 builder.Services.AddScoped<ICommentRepository, CommentRepository>(); // comes from episode 12
+builder.Services.AddScoped<ITokenService, TokenService>(); // comes from episode 23
 
 var app = builder.Build();
 
