@@ -14,6 +14,6 @@ namespace LearningApi.DTOs.Stocks {
 
         public long MarketCap { get; set; }
         
-        public List<CommentDTO> Comments { get; set; }
+        public List<CommentDTO> Comments { get; set; } = new List<CommentDTO>();
     }
 }
