@@ -1,1 +1,1 @@
-# Stock API Tutorial
+# Stock API
